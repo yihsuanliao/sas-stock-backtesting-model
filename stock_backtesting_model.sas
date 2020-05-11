@@ -1,32 +1,37 @@
+*******æŠ•è³‡ç­–ç•¥ç°¡ä»‹ï¼š
+æ¯å¹´åº•å°‡ç•¶å¹´åº¦çš„è‚¡ç¥¨åˆ†ç‚ºäº”ç¾¤ï¼Œè´å®¶ç‚º4ï¼Œè¼¸å®¶ç‚º0ã€‚
+æ¬¡å¹´åˆï¼Œè²·å…¥è´å®¶è‚¡ç¥¨ç¾¤(çµ„åˆ¥4)ï¼Œæ”¾ç©ºè¼¸å®¶(çµ„åˆ¥0)ï¼Œå½¢æˆä¸€å€‹æŠ•è³‡çµ„åˆã€‚
+æ¯å¹´åˆæ›´æ–°ä¸€æ¬¡æŠ•è³‡çµ„åˆã€‚;
+
 DM "LOG;CLEAR;OUTPUT;CLEAR;";
-libname Mydata 'C:\Mydata17'; /*³]©wMydata¸ê®ÆÀ]*/
+libname Mydata 'C:\Mydata17'; /*è¨­å®šMydataè³‡æ–™é¤¨*/
 ods html;
-data test1; /*±NÀÉ®×¼g¤Jtest1*/
+data test1; /*å°‡æª”æ¡ˆå¯«å…¥test1*/
 set mydata. F01s_b_ret_monthly;
-yyyy=year(datadate); /*¨ú¥X¦~¥÷*/
-if gvkey="Y9999" then delete; /*§â¤j½L§R±¼*/
-keep gvkey yyyy RET; /*«O¯d¤½¥q¥N½X¡B¦~¡B³ø¹S²v*/
+yyyy=year(datadate); /*å–å‡ºå¹´ä»½*/
+if gvkey="Y9999" then delete; /*æŠŠå¤§ç›¤åˆªæ‰*/
+keep gvkey yyyy RET; /*ä¿ç•™å…¬å¸ä»£ç¢¼ã€å¹´ã€å ±é…¬ç‡*/
 run;
-proc sort data=test1;by yyyy gvkey ;run; /*¨Ì·Ó¦~¡B¤½¥q¥N½X±Æ§Ç*/
-proc means data=test1 sum noprint; /*¥[Á`¤ë³ø¹S²v¦¨¦~³ø¹S²v*/
+proc sort data=test1;by yyyy gvkey ;run; /*ä¾ç…§å¹´ã€å…¬å¸ä»£ç¢¼æ’åº*/
+proc means data=test1 sum noprint; /*åŠ ç¸½æœˆå ±é…¬ç‡æˆå¹´å ±é…¬ç‡*/
 var RET;
 by yyyy gvkey;
 output out=test2 sum=ret_sum;
 quit;
-proc sort data=test2 nodup; by yyyy;run; /*¨Ì·Ó¦~±Æ§Ç*/
-proc rank data=test2 out= test3 groups=5; /*§âtest2«ö·Ó¦~³ø¹S²v¤À¦¨¤­¸s*/
+proc sort data=test2 nodup; by yyyy;run; /*ä¾ç…§å¹´æ’åº*/
+proc rank data=test2 out= test3 groups=5; /*æŠŠtest2æŒ‰ç…§å¹´å ±é…¬ç‡åˆ†æˆäº”ç¾¤*/
 var ret_sum;
 by yyyy;
 ranks rank_ret;
 run;
-data test4; /*±NÀÉ®×¼g¤Jtest4*/
+data test4; /*å°‡æª”æ¡ˆå¯«å…¥test4*/
 set test3;
-if rank_ret=0 then profolio=-(ret_sum);/*§â¿é®a©ñªÅ*/
-if rank_ret>0 then profolio=ret_sum;/*Ä¹®a¶R¤J*/
-if rank_ret >0 and rank_ret <4 then delete ;/*¯d¤U¿é®a©MÄ¹®a*/
-if yyyy=2014 then delete;/*¥u¯d2005~2013ªº¸ê®Æ*/
+if rank_ret=0 then profolio=-(ret_sum);/*æŠŠè¼¸å®¶æ”¾ç©º*/
+if rank_ret>0 then profolio=ret_sum;/*è´å®¶è²·å…¥*/
+if rank_ret >0 and rank_ret <4 then delete ;/*ç•™ä¸‹è¼¸å®¶å’Œè´å®¶*/
+if yyyy=2014 then delete;/*åªç•™2005~2013çš„è³‡æ–™*/
 run;
-proc means data= test4 mean noprint;/*¤À§Oºâ¥XÄ¹®a¤Î¿é®a¥­§¡¦~³ø¹S²v*/
+proc means data= test4 mean noprint;/*åˆ†åˆ¥ç®—å‡ºè´å®¶åŠè¼¸å®¶å¹³å‡å¹´å ±é…¬ç‡*/
 var profolio;
 class rank_ret;
 output out= test5 mean=mean_profolio;
@@ -35,7 +40,7 @@ run;
 
 
 **
-Ä¹®a¥­§¡³ø¹S²v=48.877638889%
-¿é®aªº¥­§¡³ø¹S=25.838571429%
-Ä¹®a´î¿é®a=23.03906746%
-«h¤E¦¸§ë¸ê²Õ¦X¤§«á¬°1000(1+23.03906746%)^9=6462.302;
+è´å®¶å¹³å‡å ±é…¬ç‡=48.877638889%
+è¼¸å®¶çš„å¹³å‡å ±é…¬=25.838571429%
+è´å®¶æ¸›è¼¸å®¶=23.03906746%
+å‰‡ä¹æ¬¡æŠ•è³‡çµ„åˆä¹‹å¾Œç‚º1000(1+23.03906746%)^9=6462.302;
